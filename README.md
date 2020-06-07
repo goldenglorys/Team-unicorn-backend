@@ -9,7 +9,7 @@
 Remember,</p>
 <p class="has-line-data" data-line-start="9" data-line-end="10"><code>chore, feature, bug</code></p>
 <p class="has-line-data" data-line-start="11" data-line-end="17"><strong>For a feature:</strong><br>
-<code>git commit -m &quot;feat: implemented user log-in For a bug: git commit -m &quot;</code><br>
+<code>git commit -m &quot;feat: implemented user log-in &quot;</code><br>
 <strong>For a bug:</strong><br>
 <code>git commit &quot;bug: fix inconsistency in log in screen&quot;</code><br>
 <strong>For a chore:</strong><br>
