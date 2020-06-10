@@ -2,6 +2,21 @@ import express from 'express';
 
 const app = express();
 
+import userRoute from '../routes/user.route';
+
+import mongoose from 'mongoose';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+const db = process.env.DATABASE_URI;
+mongoose.connect(db, { useUnifiedTopology: true, useNewUrlParser: true })
+    .then(() => console.log('MongoDB connected successfully'))
+    .catch(err => console.log(err))
+
 // entry index enpoints
 app.get('/', (req, res) => {
     res.json({
@@ -10,7 +25,9 @@ app.get('/', (req, res) => {
     }).status(200);
 })
 
-const PORT = 5000 || process.env.PORT;
+app.use('/', userRoute);
+
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
     console.log(`The server is listen on PORT ${PORT}`);
