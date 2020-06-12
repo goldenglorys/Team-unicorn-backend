@@ -55,4 +55,37 @@ const signUp = (req, res) => {
         })
 }
 
-export default signUp;
+
+const signIn = (req, res, next) => {
+    const email = req.body.email;
+
+    const password = req.body.password;
+
+    User.findOne({ email })
+        .then(user => {
+            if (!user) { return res.json({ status: 404, message : 'User not found, please provide valid credentials'});
+        }
+
+        bcrypt.compare(password, user.password).then(valid => {
+            if (!valid) { return res.json({ status: 403, message :'Incorrect username or password, please review details and try again'});
+        }
+        const token = jwt.sign(
+            { email: user.email, id: user.id },
+            "somesecretkey",
+            { expiresIn: 3600 }
+            );
+
+            res.json({
+            status: 200,
+                data:{
+                id: user.id,
+                token,
+                message : 'User Logged in Sucessfully'
+                }
+            });
+        });
+    })
+    .catch(err => console.log(err)); 
+}
+
+export {signUp, signIn};
