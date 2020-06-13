@@ -88,4 +88,32 @@ const signIn = (req, res, next) => {
     .catch(err => console.log(err)); 
 }
 
-export {signUp, signIn};
+
+//Get user profile details
+
+const profile = (req, res, next) => {
+    const u_id = req.params.user_id;
+        User.findById(u_id).select('firstname lastname username email _id').then(
+            result => {
+            res.status(200).json({
+                status: 200,
+                message: 'success',
+                data: result,
+                request: {
+                    type: "GET",
+                    url: `http://${req.headers.host}/api/v1/auth/profile/:${user_id}`
+                }
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json({
+                status: 400,
+                message: 'An error ocuur',
+                error: err
+            })
+        })
+}
+
+
+export {signUp, signIn, profile};
