@@ -57,37 +57,37 @@ const signUp = (req, res) => {
 
 
 const signIn = (req, res, next) => {
-    const email = req.body.email;
-
-    const password = req.body.password;
+    const { email, password } = req.body;
 
     User.findOne({ email })
         .then(user => {
-            if (!user) { return res.json({ status: 404, message : 'User not found, please provide valid credentials'});
-        }
+            if (!user) {
+                return res.json({ status: 404, message: 'User not found, please provide valid credentials' });
+            }
 
-        bcrypt.compare(password, user.password).then(valid => {
-            if (!valid) { return res.json({ status: 403, message :'Incorrect username or password, please review details and try again'});
-        }
-        const token = jwt.sign(
-            { email: user.email, id: user.id },
-            "somesecretkey",
-            { expiresIn: 3600 }
-            );
+            bcrypt.compare(password, user.password)
+                .then(valid => {
+                    if (!valid) {
+                        return res.json({ status: 403, message: 'Incorrect username or password, please review details and try again' });
+                    }
+                    const token = jwt.sign(
+                        { email: user.email, id: user.id },
+                        process.env.JWT_SECRET,
+                        { expiresIn: 3600 }
+                    );
 
-            res.json({
-            status: 200,
-                data:{
-                id: user.id,
-                token,
-                message : 'User Logged in Sucessfully'
-                }
-            });
-        });
-    })
-    .catch(err => console.log(err)); 
+                    res.json({
+                        status: 200,
+                        data: {
+                            id: user.id,
+                            token,
+                            message: 'User Logged in Sucessfully'
+                        }
+                    });
+                });
+        })
+        .catch(err => console.log(err));
 }
-
 
 //Get user profile details
 
@@ -117,3 +117,4 @@ const profile = (req, res, next) => {
 
 
 export {signUp, signIn, profile};
+
