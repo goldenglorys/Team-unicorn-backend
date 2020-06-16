@@ -92,9 +92,9 @@ const signIn = (req, res, next) => {
 //Get user profile details
 
 const profile = (req, res, next) => {
-    const u_id = req.params.user_id;
-        User.findById(u_id).select('firstname lastname username email _id').then(
-            result => {
+    const { id } = req.params;
+    User.findById(id).select('firstname lastname username email _id').then(
+        result => {
             res.status(200).json({
                 status: 200,
                 message: 'success',
@@ -116,5 +116,5 @@ const profile = (req, res, next) => {
 }
 
 
-export {signUp, signIn, profile};
+export { signUp, signIn, profile };
 
