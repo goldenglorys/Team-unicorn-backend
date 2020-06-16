@@ -101,7 +101,7 @@ const profile = (req, res, next) => {
                 data: result,
                 request: {
                     type: "GET",
-                    url: `http://${req.headers.host}/api/v1/auth/profile/:${user_id}`
+                    url: `http://${req.headers.host}/api/v1/auth/profile/:${id}`
                 }
             })
         })
