@@ -33,6 +33,22 @@ class ProfileController {
             })
     }
 
+    getProfiles(req, res) {
+        const { _id } = req.params;
+        Profile.find()
+            .then((err, foundObject) => {
+                if (err) return res.json({ status: 400, message: 'There is an error' })
+                res.json({
+                    status: 200,
+                    data: foundObject
+                })
+            })
+            .catch(err => res.json({
+                status: 404,
+                data: err
+            }))
+    }
+
     deleteProfile(req, res) {
         const { _id } = req.params;
         Profile.findOneAndRemove(_id)
