@@ -10,8 +10,8 @@ dotenv.config();
 class ProfileController {
 
     getProfile(req, res, next) {
-        const { _id } = req.params;
-        Profile.findById(_id).select('firstname lastname username email _id').then(
+
+        Profile.findById(req.params.id).select('firstname lastname username email _id').then(
             result => {
                 res.status(200).json({
                     status: 200,
@@ -31,11 +31,11 @@ class ProfileController {
                     error: err
                 })
             })
+        next();
     }
 
-    getProfiles(req, res) {
-        const { _id } = req.params;
-        Profile.find()
+    getProfiles(req, res, next) {
+        Profile.find({})
             .then((err, foundObject) => {
                 if (err) return res.json({ status: 400, message: 'There is an error' })
                 res.json({
@@ -47,9 +47,10 @@ class ProfileController {
                 status: 404,
                 data: err
             }))
+        next();
     }
 
-    deleteProfile(req, res) {
+    deleteProfile(req, res, next) {
         const { _id } = req.params;
         Profile.findOneAndRemove(_id)
             .then((err) => {
@@ -63,6 +64,7 @@ class ProfileController {
                 status: 404,
                 message: 'No profile found!',
             }))
+        next();
     }
 }
 
