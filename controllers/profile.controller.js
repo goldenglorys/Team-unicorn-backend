@@ -1,4 +1,4 @@
-import User from '../models/user.model';
+import Profile from '../models/user.model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -10,8 +10,8 @@ dotenv.config();
 class ProfileController {
 
     getProfile(req, res, next) {
-        const { id } = req.params;
-        User.findById(id).select('firstname lastname username email _id').then(
+        const { _id } = req.params;
+        Profile.findById(_id).select('firstname lastname username email _id').then(
             result => {
                 res.status(200).json({
                     status: 200,
@@ -33,6 +33,21 @@ class ProfileController {
             })
     }
 
+    deleteProfile(req, res) {
+        const { _id } = req.params;
+        Profile.findOneAndRemove(_id)
+            .then((err) => {
+                if (err) return res.json({ status: 400, message: 'No user with the specified Id' });
+                res.json({
+                    status: 200,
+                    message: 'The profile is deleted successfully',
+                })
+            })
+            .catch(err => res.json({
+                status: 404,
+                message: 'No profile found!',
+            }))
+    }
 }
 
 
