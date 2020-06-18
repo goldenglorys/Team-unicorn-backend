@@ -57,63 +57,37 @@ const signUp = (req, res) => {
 
 
 const signIn = (req, res, next) => {
-    const email = req.body.email;
-
-    const password = req.body.password;
+    const { email, password } = req.body;
 
     User.findOne({ email })
         .then(user => {
-            if (!user) { return res.json({ status: 404, message : 'User not found, please provide valid credentials'});
-        }
+            if (!user) {
+                return res.json({ status: 404, message: 'User not found, please provide valid credentials' });
+            }
 
-        bcrypt.compare(password, user.password).then(valid => {
-            if (!valid) { return res.json({ status: 403, message :'Incorrect username or password, please review details and try again'});
-        }
-        const token = jwt.sign(
-            { email: user.email, id: user.id },
-            "somesecretkey",
-            { expiresIn: 3600 }
-            );
+            bcrypt.compare(password, user.password)
+                .then(valid => {
+                    if (!valid) {
+                        return res.json({ status: 403, message: 'Incorrect username or password, please review details and try again' });
+                    }
+                    const token = jwt.sign(
+                        { email: user.email, id: user.id },
+                        process.env.JWT_SECRET,
+                        { expiresIn: 3600 }
+                    );
 
-            res.json({
-            status: 200,
-                data:{
-                id: user.id,
-                token,
-                message : 'User Logged in Sucessfully'
-                }
-            });
-        });
-    })
-    .catch(err => console.log(err)); 
+                    res.json({
+                        status: 200,
+                        data: {
+                            id: user.id,
+                            token,
+                            message: 'User Logged in Sucessfully'
+                        }
+                    });
+                });
+        })
+        .catch(err => console.log(err));
 }
 
+export { signUp, signIn, profile };
 
-//Get user profile details
-
-const profile = (req, res, next) => {
-    const u_id = req.params.user_id;
-        User.findById(u_id).select('firstname lastname username email _id').then(
-            result => {
-            res.status(200).json({
-                status: 200,
-                message: 'success',
-                data: result,
-                request: {
-                    type: "GET",
-                    url: `http://${req.headers.host}/api/v1/auth/profile/:${user_id}`
-                }
-            })
-        })
-        .catch(err => {
-            console.log(err)
-            res.status(400).json({
-                status: 400,
-                message: 'An error ocuur',
-                error: err
-            })
-        })
-}
-
-
-export {signUp, signIn, profile};
